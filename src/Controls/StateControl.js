@@ -29,6 +29,14 @@ const DEFAULT_STATES = {
         finger: 1,
         _event: 'drag',
     },
+    MOVE_GLOBE_ARROUND_POLE: {
+        enable: true,
+        mouseButton: THREE.MOUSE.LEFT,
+        double: false,
+        keyboard: CONTROL_KEYS.SHIFT,
+        finger: 1,
+        _event: 'drag',
+    },
     DOLLY: {
         enable: true,
         mouseButton: THREE.MOUSE.MIDDLE,
