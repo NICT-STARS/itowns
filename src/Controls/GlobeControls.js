@@ -434,6 +434,25 @@ class GlobeControls extends THREE.EventDispatcher {
                 cameraTarget.position.applyQuaternion(moveAroundGlobe);
                 this.camera.position.applyQuaternion(moveAroundGlobe);
                 break;
+            // MOVE_GLOBE_ARROUND_POLE Rotate globe with mouse
+            case this.states.MOVE_GLOBE_ARROUND_POLE:{
+                if (minDistanceZ < 0) {
+                    cameraTarget.translateY(-minDistanceZ);
+                    this.camera.position.setLength(this.camera.position.length() - minDistanceZ);
+                } else if (minDistanceZ < this.minDistanceCollision) {
+                    const translate = this.minDistanceCollision * (1.0 - minDistanceZ / this.minDistanceCollision);
+                    cameraTarget.translateY(translate);
+                    this.camera.position.setLength(this.camera.position.length() + translate);
+                }
+
+                moveAroundGlobe.setFromUnitVectors(normalizedIntersection.clone().setZ(0), lastNormalizedIntersection.clone().setZ(0));
+
+                lastNormalizedIntersection.copy(normalizedIntersection).applyQuaternion(moveAroundGlobe);
+                cameraTarget.position.applyQuaternion(moveAroundGlobe);
+                this.camera.position.applyQuaternion(moveAroundGlobe);
+
+                break;
+            }
             // PAN Move camera in projection plan
             case this.states.PAN:
                 this.camera.position.add(panVector);
@@ -672,6 +691,12 @@ class GlobeControls extends THREE.EventDispatcher {
                 this.player.addEventListener('animation-stopped', this._onEndingMove);
             } else if (event.previous === this.states.MOVE_GLOBE && (Date.now() - lastTimeMouseMove < 50)) {
                 this.player.setCallback(() => { this.update(this.states.MOVE_GLOBE); });
+                // animation since mouse up event occurs less than 50ms after the last mouse move
+                this.player.play(durationDampingMove);
+                this._onEndingMove = () => this.onEndingMove();
+                this.player.addEventListener('animation-stopped', this._onEndingMove);
+            } else if (event.previous === this.states.MOVE_GLOBE_ARROUND_POLE && (Date.now() - lastTimeMouseMove < 50)) {
+                this.player.setCallback(() => { this.update(this.states.MOVE_GLOBE_ARROUND_POLE); });
                 // animation since mouse up event occurs less than 50ms after the last mouse move
                 this.player.play(durationDampingMove);
                 this._onEndingMove = () => this.onEndingMove();
