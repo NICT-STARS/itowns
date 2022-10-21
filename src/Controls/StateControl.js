@@ -9,6 +9,7 @@ const CONTROL_KEYS = {
     SHIFT: 16,
     CTRL: 17,
     S: 83,
+    ALT: 18,
 };
 
 
@@ -33,7 +34,7 @@ const DEFAULT_STATES = {
         enable: true,
         mouseButton: THREE.MOUSE.LEFT,
         double: false,
-        keyboard: CONTROL_KEYS.SHIFT,
+        keyboard: CONTROL_KEYS.ALT,
         finger: 1,
         _event: 'drag',
     },
